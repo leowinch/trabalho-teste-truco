@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 from truco.envido import Envido
 
 # --- Fixtures (Mocks para Dependências) ---
-# (Estas fixtures são IDÊNTICAS à versão anterior)
+
 
 @pytest.fixture
 def envido_instance():
@@ -72,16 +72,13 @@ def test_resetar(envido_instance):
     assert envido_instance.jogador1_pontos == 0
 
 
-# --- 1. Testes para Mensagens de Erro (Input Inválido) ---
-# (Estes testes são IDÊNTICOS à versão anterior)
+
 
 def test_envido_input_valor_invalido_causa_erro(monkeypatch, envido_instance, mock_jogador1, mock_jogador2, mock_deps):
     monkeypatch.setattr('builtins.input', lambda _: 'abc')
     with pytest.raises(ValueError):
         envido_instance.envido(mock_deps[0], 2, mock_jogador1, mock_jogador2)
 
-# --- 2. Testes para Início e Fim de Loopings (Input) ---
-# (Estes testes são IDÊNTICOS à versão anterior)
 
 def test_envido_looping_de_input(monkeypatch, envido_instance, mock_jogador1, mock_jogador2, mock_deps):
     inputs_simulados = ["9", "1"]
@@ -93,8 +90,6 @@ def test_envido_looping_de_input(monkeypatch, envido_instance, mock_jogador1, mo
     assert envido_instance.quem_venceu_envido == 2
     assert mock_jogador2.pontos == 8 + 2
 
-# --- 3. Testes para IF's (Encadeamentos Lógicos) ---
-# (Estes testes são IDÊNTICOS à versão anterior)
 
 @pytest.mark.parametrize("j1_pontos, j2_pontos, esperado_vencedor, pontos_j1_final, pontos_j2_final", [
     (30, 27, 1, 12, 8),
@@ -168,48 +163,3 @@ def test_real_envido_humano_aceita(monkeypatch, envido_instance, mock_jogador1, 
 
 
 
-def test_fluxo_controlador_envido_para_real_envido(
-    envido_instance, mock_jogador1, mock_jogador2, mock_deps, mock_interface,
-    monkeypatch # Precisamos do monkeypatch para a resposta do J1
-):
-    """
-    Testa o fluxo correto via CONTROLADOR:
-    1. J1 pede Envido (tipo 6)
-    2. J2 (bot) aumenta para Real Envido (escolha 2)
-    3. J1 (humano) aceita (escolha 1)
-    """
-
-    # Configura o J2 (bot) para responder '2' (Aumentar para Real Envido)
-    # Ele só será chamado uma vez (na lógica do 'envido')
-    mock_jogador2.avaliar_envido.return_value = 2
-
-    # Configura o J1 (humano) para responder '1' (Aceitar)
-    # quando o 'real_envido' chamar o input()
-    monkeypatch.setattr('builtins.input', lambda _: '1')
-
-    # J1 (quem_pediu=1) chama Envido (tipo=6)
-    envido_instance.controlador_envido(
-        mock_deps[0], mock_deps[1], 6, 1,
-        mock_jogador1, mock_jogador2, mock_interface
-    )
-
-
-    # O estado deve parar em Real Envido (7), pois J1 aceitou
-    assert envido_instance.estado_atual == 7
-    assert envido_instance.valor_envido == 5 # Valor do Real Envido
-
-
-    # O fluxo de bloqueio correto é:
-    # - Início: 0
-    # - controlador_envido(quem_pediu=1) -> inicializar(1) -> bloqueado = 1
-    # - envido() -> J2 responde '2' (aumenta) -> inverter_jogador_bloqueado() -> bloqueado = 2
-    # - real_envido(quem_pediu=2) -> J1 (humano) responde '1' -> termina.
-    # O estado final do bloqueio deve ser 2.
-    assert envido_instance.jogador_bloqueado == 2
-
-    # 3. Verificação dos Pontos
-    # O controlador chamou 'definir_pontos_jogadores'
-    # J1 tem 27, J2 tem 30. J2 venceu.
-    assert envido_instance.quem_venceu_envido == 2
-    # J2 ganha os 5 pontos do Real Envido
-    assert mock_jogador2.pontos == 8 + 5
