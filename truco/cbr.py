@@ -45,7 +45,7 @@ class Cbr():
         """Cálculo dos 100 Nearest Neighbors."""
         if (df is None):
             return NearestNeighbors(n_neighbors=100, algorithm='ball_tree').fit(self.dataset)
-            
+
         return NearestNeighbors(n_neighbors=100, algorithm='ball_tree').fit(df)
 
 
@@ -62,7 +62,7 @@ class Cbr():
         elif ((rodada) == 1): ordem_carta_jogada = 'terceira' + ordem_carta_jogada
 
         valor_referencia = jogadas_vencidas[ordem_carta_jogada].value_counts().index.to_list()[0]
-        if (valor_referencia <= 0): 
+        if (valor_referencia <= 0):
             return -1
 
         carta_escolhida = min(pontuacao_cartas, key=lambda x:abs(x-valor_referencia))
@@ -89,10 +89,10 @@ class Cbr():
 
         if (vencidas > perdidas and qualidade_mao_bot > qualidade_mao_humana):
             return 2
-        
+
         elif (qualidade_mao_bot > qualidade_mao_humana):
             return 1
-        
+
         else:
             return 0
 
@@ -122,7 +122,7 @@ class Cbr():
                     return 8
 
                 return 7
-            
+
             elif (envido_ganhas > envido_perdidas or envido_ganhas < envido_perdidas):
                 if (robo_perdendo):
                     return 8

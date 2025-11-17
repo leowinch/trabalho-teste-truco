@@ -3,8 +3,6 @@ import truco.carta as carta_modulo
 from truco.carta import Carta
 import sys
 
-# --- FIXTURE (MOCK DAS CONSTANTES EXTERNAS) ---
-
 @pytest.fixture
 def mock_pontos_reais(monkeypatch):
 
@@ -42,7 +40,6 @@ def mock_pontos_reais(monkeypatch):
         "4": 4
     }
 
-    # Injeta as constantes no módulo Carta para que os métodos possam acessá-las
     monkeypatch.setattr(carta_modulo, 'MANILHA', MANILHA)
     monkeypatch.setattr(carta_modulo, 'CARTAS_VALORES', CARTAS_VALORES)
     monkeypatch.setattr(carta_modulo, 'ENVIDO', ENVIDO)
@@ -56,13 +53,10 @@ def mock_pontos_reais(monkeypatch):
 
 @pytest.fixture
 def carta_instance(mock_pontos_reais):
-    """
-    Retorna uma instância vazia da classe Carta, com as constantes já injetadas.
-    """
+
     return Carta(numero=None, naipe=None)
 
 
-# --- TESTES PARA CHAMADAS DE FUNÇÃO OU MÉTODO (PARÂMETROS VARIADOS) ---
 
 def test_retornar_numero():
     carta = Carta(numero=5, naipe='COPAS')
@@ -79,8 +73,6 @@ def test_retornar_naipe_codificado(carta_instance):
     assert carta_instance.retornar_naipe_codificado() == 4
     carta_instance.naipe = 'NAIPE INVALIDO'
     assert carta_instance.retornar_naipe_codificado() is None
-
-# --- TESTES PARA RETORNOS DE FUNÇÃO (PONTUAÇÃO) ---
 
 def test_retornar_pontos_carta_manilha(carta_instance):
     """Testa o retorno da pontuação da manilha mais forte (1 de Espadas)."""
@@ -100,7 +92,6 @@ def test_retornar_pontos_envido_carta_normal(carta_instance):
     carta_normal = Carta(numero=7, naipe='COPAS')
     assert carta_instance.retornar_pontos_envido(carta_normal) == 7
 
-# --- TESTES PARA IF's (COMBINAÇÕES DE ENCADEMENTO) ---
 
 @pytest.mark.parametrize("c1_num, c1_naipe, c2_num, c2_naipe, esperada", [
     # Manilha vs Manilha (1 Espadas > 1 Bastos) - Início de looping (1ª combinação de if)
@@ -157,7 +148,6 @@ def test_verificar_carta_baixa_combinacoes(carta_instance, c1_num, c1_naipe, c2_
 
 
 
-# --- TESTES PARA INÍCIO E FIM DE LOOPINGS E LÓGICA DE CLASSIFICAÇÃO ---
 
 def test_classificar_carta_cenario_completo(carta_instance):
     """

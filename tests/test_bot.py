@@ -81,7 +81,7 @@ def test_criar_mao(bot, baralho):
     assert bot.envido == bot.calcula_envido(bot.mao)
 
 
-def test_jogar_carta(bot, cbr):
+def test_jogar_carta(bot):
     try:
         bot.mao = [Carta("1", "ESPADA"), Carta("12", "ESPADA"), Carta("3", "COPAS")]
         bot.flor = False

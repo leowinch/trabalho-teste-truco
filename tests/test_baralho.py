@@ -3,7 +3,7 @@ import random
 from truco.baralho import Baralho
 from truco.carta import Carta
 
-# --- FIXTURES ---
+
 
 @pytest.fixture
 def baralho_novo():
@@ -14,8 +14,6 @@ def baralho_vazio():
     b = Baralho()
     b.cartas = []
     return b
-
-
 
 
 
@@ -34,19 +32,13 @@ def test_criar_baralho_contagem_total_apos_loop(baralho_novo):
 
 
 def test_criar_baralho_if_condicao_verdadeira_menor(baralho_novo):
-    """
-    Testa a primeira parte do 'if' (n < 8), garantindo que
-    cartas como '7' foram incluídas.
-    """
+
     # Procura por qualquer carta de número 7
     tem_carta_7 = any(c.numero == 7 for c in baralho_novo.cartas)
     assert tem_carta_7
 
 def test_criar_baralho_if_condicao_verdadeira_maior(baralho_novo):
-    """
-    Testa a segunda parte do 'if' (n >= 10), garantindo que
-    cartas como '10' foram incluídas.
-    """
+
     # Procura por qualquer carta de número 10
     tem_carta_10 = any(c.numero == 10 for c in baralho_novo.cartas)
     assert tem_carta_10
@@ -61,17 +53,14 @@ def test_criar_baralho_if_condicao_falsa(baralho_novo):
 
 
 def test_resetar_limpa_listas_de_estado(baralho_novo):
-
-    # Modifica o estado do baralho
     baralho_novo.retirar_carta()
-    baralho_novo.manilhas = [Carta(1, "ESPADAS")]
-
     assert len(baralho_novo.cartas) == 39
+
+    baralho_novo.manilhas = [Carta(1, "ESPADAS")]
     assert len(baralho_novo.manilhas) == 1
 
     baralho_novo.resetar()
 
-    # Verifica o estado final
     assert len(baralho_novo.cartas) == 0
     assert len(baralho_novo.manilhas) == 0
     assert len(baralho_novo.vira) == 0
